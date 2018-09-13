@@ -1,29 +1,66 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <Heater></Heater>
+      <Side></Side>
+    <div id="container">
+      <router-view></router-view>
     </div>
-    <router-view/>
   </div>
 </template>
 
 <style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import "./assets/css/scap";
+
+body{
+    background-color: #F2F5FA;
+    box-sizing: border-box;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
 }
-#nav {
+#app {
+  color: #2c3e50;
+  box-sizing: border-box;
+}
+#container {
   padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+  width: calc(100% - @side-width);
+  margin-left: @side-width;
+  box-sizing: border-box;
+  padding-top: @header-height;
 }
 </style>
+<script lang="ts">
+import Vue from 'vue';
+import Heater from '@/components/header.vue';
+import Side from '@/components/side.vue';
+import Cookies from 'js-cookie';
+import { sensebotAuth } from '@/api/auth';
+import {Encrypt , Decrypt}from '@/assets/js/crypt'
+import { connect } from 'tls';
+
+export default Vue.extend({
+    components: {
+        Heater,
+        Side,
+	},
+	
+    created() {
+        sensebotAuth().then((res:any) => {
+            if(res.data.status == 1){
+			  let info = res.data.data;
+			//   Cookies.set('user', info.loginname);
+			console.log(typeof info.level)
+			  Cookies.set('S_Level', Encrypt(info.level.toString()));
+			 let level =  Cookies.get('S_Level') || '';
+			  console.log(Decrypt(level))
+            }
+            else{
+              Cookies.set('_sensebot', 'false')
+            }
+        });
+    },
+});
+</script>
+
