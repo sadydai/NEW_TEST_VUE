@@ -14,16 +14,36 @@ export default class Form extends Vue {
     model: any;
     private fields: Array<Object> = [];
 
-    mounted() {
-        this.$on('on-form-item-add', (fields:any) => {
-            console.log(fields);
+    validate(callback:any) {
+        return new Promise((resolve) => {
+            let valid = true;
+            let count = 0;
+            this.fields.forEach((field :any) => {
+                field.validate('', (errors:any) => {
+                    if (errors) {
+                        valid = false;
+                    }
+                    if (++count === this.fields.length) {
+                        // all finish
+                        resolve(valid);
+                        if (typeof callback === 'function') {
+                            callback(valid);
+                        }
+                    }
+                });
+            });
         });
     }
+
     created() {
-        console.log('创建');
-        // this.$on('on-form-item-add', (fields:any)=>{
-        //     console.log(fields)
-        // });
+        this.$on('on-form-item-add', (field:any) => {
+            if (field) this.fields.push(field);
+            return false;
+        });
+    }
+    @Watch('rules')
+    rule(val:any) {
+        this.validate(val);
     }
 }
 

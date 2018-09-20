@@ -36,6 +36,7 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component({
     })
 export default class Header extends Vue {
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["changeMenu"] }]    */
     private sideBarMenu : any = { button: false, onepass: false, deepknow: false }
     toggle(e: any) {
         this.sideBarMenu[e] = !this.sideBarMenu[e];

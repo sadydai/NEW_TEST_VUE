@@ -1,12 +1,12 @@
 <template>
     <div :class="WrapClass">
         <i :class="iconClass"></i>
-        <input type="text" :class="inputClass" @focus="handleFocus($event.target.value)" @blur="handleBlur($event.target.value)" @change="handleChange($event.target.value)" :value="currentValue" @input="handelInput($event.target.value)"
+        <input type="text" :class="inputClass" @focus="handleFocus($event.target.value)" @blur="handleBlur($event.target.value)" @change="handleChange($event.target.value)" :value="currentValue" @input="handleInput($event.target.value)"
             :placeholder="placeholder">
     </div>
 </template>
 
-<script lang="ts">
+<script lang ="ts" >
 import { Vue, Emit, Prop, Watch, Component } from 'vue-property-decorator';
 @Component
 export default class Input extends Vue {
@@ -28,39 +28,57 @@ export default class Input extends Vue {
     placeholder!: String;
 
     private currentValue = this.value;
-
-    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["handleFocus","onChange", "handleBlur","getChange", "handelInput", "handleChange"] }]    */
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["handleFocus","getFormBlur", "getInput","getChange", "handelInput", "handleChange"] }]    */
     @Emit('on-focus')
     handleFocus(event: any) {
     }
     /** on-change 事件在input失去焦点时触发 */
     @Emit('on-change')
     handleChange(event: any) {
+        this.setCurrentValue(event);
     }
     @Emit('on-blur')
     handleBlur(event: any) {
-        console.log('blur 表单');
         this.getFormBlur(this.currentValue);
+        this.dispatch('FormItem', 'on-form-blur', this.currentValue);
     }
-    @Emit('on-form-blur')
     getFormBlur(value: any) {
-        console.log('表单焦点blur');
     }
     /** 输入触发 */
     @Emit('input')
-    handelInput(event: any) {
+    getInput(event:any) {
+    }
+    handleInput(event: any) {
+        this.getInput(event);
         this.setCurrentValue(event);
     }
     setCurrentValue(value: any) {
         if (value === this.currentValue) return;
         this.currentValue = value;
+        this.dispatch('FormItem', 'on-form-change', value);
     }
     @Watch('currentValue')
     onChange(val: any, oldVal: any) {
         this.setCurrentValue(val);
     }
+    dispatch(componentName :string, eventName:string, params:any) {
+        let parent = this.$parent || this.$root;
+        let name = parent.$options.name;
+
+        while (parent && (!name || name !== componentName)) {
+            parent = parent.$parent;
+
+            if (parent) {
+                name = parent.$options.name;
+            }
+        }
+        if (parent) {
+            parent.$emit(eventName, params);
+        }
+    }
 }
 </script>
+
 <style lang="less">
 @import '../assets/css/scap';
 @import '../assets/css/color';

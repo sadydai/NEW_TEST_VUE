@@ -1,7 +1,7 @@
 {
   "name": "new-test-vue",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
@@ -38,5 +38,20 @@
     "less-loader": "^4.1.0",
     "typescript": "^3.0.0",
     "vue-template-compiler": "^2.5.17"
-  }
+  },
+  "description": "## Project setup ``` npm install ```",
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sadydai/NEW_TEST_VUE.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sadydai/NEW_TEST_VUE/issues"
+  },
+  "homepage": "https://github.com/sadydai/NEW_TEST_VUE#readme"
 }
