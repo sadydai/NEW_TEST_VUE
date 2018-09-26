@@ -24,7 +24,6 @@ export default class Form extends Vue {
                         valid = false;
                     }
                     if (++count === this.fields.length) {
-                        // all finish
                         resolve(valid);
                         if (typeof callback === 'function') {
                             callback(valid);

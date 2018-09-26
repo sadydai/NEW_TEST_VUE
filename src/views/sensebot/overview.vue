@@ -2,7 +2,7 @@
   <div class="sensebot_overview">
     <h1>This is 验证码 overview page</h1>
     <div>
- 
+
 </div>
   </div>
 </template>
@@ -14,5 +14,5 @@ export default class Overview extends Vue {}
 
 <style lang="less">
 
-  
+
 </style>

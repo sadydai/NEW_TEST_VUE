@@ -4,13 +4,24 @@
                 <span :class="innerClasses"></span>
                 <span :class="correctClasses"></span>
                 <input
-                    type="radio"
+                    v-if="group"
+                    type="checkbox"
                     :class="inputClasses"
                     :disabled="disabled"
-                    :checked="currentValue"
+                    :value="label"
                     :name="groupName"
                     @change="change"
+                    v-model="model"
                    >
+                <input
+                v-else
+                type="checkbox"
+                :class="inputClasses"
+                :disabled="disabled"
+                :checked="currentValue"
+                :name="groupName"
+                @change="change"
+                >
             </span>
         <slot> <span>{{ label }}</span></slot>
     </label>
@@ -19,8 +30,8 @@
 import { Vue, Prop, Component, Emit } from 'vue-property-decorator';
 import { findComponentUpward } from '@/assets/js/assist';
 @Component
-export default class Radio extends Vue {
-    private prefixCls = 'gt-radio'
+export default class Checkbox extends Vue {
+    private prefixCls = 'gt-checkbox'
     @Prop({ type: String })
     label!: '';
     @Prop({ type: [String, Number] })
@@ -30,8 +41,9 @@ export default class Radio extends Vue {
     @Prop({ type: [String, Number, Boolean] })
     value!: false;
     private currentValue = this.value;
-    private parent = findComponentUpward(this, 'RadioGroup');
+    private parent = findComponentUpward(this, 'CheckboxGroup');
     private group: Boolean = false;
+    private model: Array<any> = [];
 
     get wrapClasses() {
         return [
@@ -78,12 +90,7 @@ export default class Radio extends Vue {
         this.currentValue = checked;
         this.emitInput(this.currentValue);
         if (this.group) {
-            if (this.label !== undefined) {
-                this.parent.change({
-                    value: this.label,
-                    checked: this.value,
-                });
-            }
+            this.parent.change(this.model);
         } else {
             this.emitChange(this.currentValue);
         }
@@ -108,7 +115,7 @@ export default class Radio extends Vue {
 <style lang="less">
 @import '../assets/css/scap';
 @import '../assets/css/color';
-.gt-radio{
+.gt-checkbox{
     display: inline-block;
     white-space: nowrap;
     position: relative;
@@ -163,15 +170,15 @@ export default class Radio extends Vue {
         opacity: 0;
         cursor: pointer;
     }
-     &-checked .gt-radio-inner{
+     &-checked .gt-checkbox-inner{
          border:1px solid #2461F6;
      }
-    &-checked .gt-radio-inner:after{
+    &-checked .gt-checkbox-inner:after{
         opacity: 1;
         transform: scale(1.1);
         transition: all .2s ease-in-out;
     }
-    &-checked .gt-radio-correct{
+    &-checked .gt-checkbox-correct{
         width: 18px;
         height: 18px;
         display: inline-block;

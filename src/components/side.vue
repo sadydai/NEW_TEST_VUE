@@ -1,6 +1,6 @@
 <template>
     <div class="side">
-        <div>
+        <!-- <div>
             <div @click="toggle('button')"  class="side-menu">
                 行为验证
             </div>
@@ -27,7 +27,7 @@
             <ul :class="{'side-hide': !sideBarMenu.deepknow, 'side-show': sideBarMenu.deepknow}">
                 <li>子3</li>
             </ul>
-        </div>
+        </div> -->
     </div>
 </template>
 <script lang="ts">

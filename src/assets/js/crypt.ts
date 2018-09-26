@@ -1,9 +1,8 @@
 import * as crypto from 'crypto-js';
 
+// key 固定为geetest_account
 const key = crypto.enc.Utf8.parse('geetest_account');
 export function Encrypt(message:string) {
-    // key 固定为geetest_account
-    // let key = crypto.enc.Utf8.parse('geetest_account');
     const ency = crypto.DES.encrypt(message, key, {
         mode: crypto.mode.ECB,
         padding: crypto.pad.Pkcs7,

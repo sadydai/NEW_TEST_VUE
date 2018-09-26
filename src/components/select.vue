@@ -3,8 +3,8 @@
         <div @click="toggleDrop" :class="prefixCls" >
             {{model}}
         </div>
-         <transition name="drop">
-            <div :class="selectClass" v-if="drop" mode="in-out">
+         <transition name="drop" mode="in-out">
+            <div :class="selectClass" v-if="drop" >
                 <ul>
                     <li v-for="option in selectList" :key="option" @click="select(option)">{{option}}</li>
                 </ul>
@@ -13,7 +13,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Vue, Prop, Component, Emit} from 'vue-property-decorator';
+import { Vue, Prop, Component, Emit } from 'vue-property-decorator';
 @Component
 export default class Select extends Vue {
     @Prop({ type: [String, Number, Array] })
@@ -26,27 +26,24 @@ export default class Select extends Vue {
     get selectClass() {
         return [
             `${this.prefixCls}-option`,
-            { [`${this.prefixCls}-show`]: this.drop},
+            { [`${this.prefixCls}-show`]: this.drop },
         ];
     }
     toggleDrop() {
         this.drop = !this.drop;
     }
     @Emit('select')
-    getSelect(value:any){
+    getSelect(value:any) {
     }
     select(option: any) {
         this.model = option;
         this.drop = false;
-        this.getSelect(this.model)
+        this.getSelect(this.model);
     }
-    
-
 }
 </script>
 <style lang="less" scoped>
 @import '../assets/css/scap';
-@import '../assets/css/animation';
     .select-selection{
         width: 100%;
         height: @select-height-base;
@@ -88,9 +85,9 @@ export default class Select extends Vue {
         &-show{
             top: @select-height-base;
             opacity: 1;
-            
+
         }
-        
+
     }
     ul{
         list-style-type: none;
@@ -100,7 +97,7 @@ export default class Select extends Vue {
     .drop-enter-active {
         animation: TransitionDropIn .3s ease-in-out;
     }
-    
+
     .drop-leave-active{
         animation: TransitionDropOut .3s;
     }
