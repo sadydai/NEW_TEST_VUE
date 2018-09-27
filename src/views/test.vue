@@ -46,9 +46,16 @@
                {{value3}}
             </div>
             <div>
-                <h3>时间选择</h3>
-                <DatePicker></DatePicker>
+                <h3>时间选择 单个</h3>
+                <DatePicker :leftVal='start' @left-date= "getDate($event)"></DatePicker>
+                <h3>时间选择 区间</h3>
+                <DatePicker :leftVal='start' :rightVal='end' :isSingle="true"></DatePicker>
             </div>
+            <br>
+            <div class="line">
+                <h2>分页</h2>
+            </div>
+
         </div>
     </div>
 </template>
@@ -90,11 +97,17 @@ export default class Test extends Vue {
         ],
     }
     private formValidate = { email: '', password: '', select: '' }
+    private start = new Date();
+    private end = new Date();
 
     /* eslint class-methods-use-this: ["error", { "exceptMethods": ["getData"] }]    */
     /* 测试blur  focus change input */
     getData() {
         console.log('on-blur');
+    }
+    // 时间
+    getDate(e:Date) {
+        // console.log(e)
     }
 
      private ruleType : Boolean = false;
@@ -117,6 +130,9 @@ export default class Test extends Vue {
 <style lang="less">
     .card{
         width: 260px;
+    }
+    .line{
+        height: 500px;
     }
 </style>
 

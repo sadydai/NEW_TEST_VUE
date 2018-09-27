@@ -1,6 +1,7 @@
 <template>
     <div :class="[prefixCls]">
        <input type="text" @click="onInputLeftClick()" :value="inputLeftText" readonly>
+       <input type="text" :value="inputRightText" readonly @click="onInputRightClick()" v-if="isSingle">
        <!-- left calendar -->
        <transition name= "drop">
             <div :class="[prefixCls + '-content']" v-if="isShowLeftCalendar">
@@ -14,7 +15,7 @@
                 </div>
                 <div :class="[prefixCls + '-month-content']">
                     <div v-for="(day, index) in calendarDays" :key="index" :class="[prefixCls + '-month']">
-                            <div :class="[prefixCls + '-month-day']" v-if="day!== 0" @click="chooseDate(day)">
+                            <div class="datepicker-month-day" v-if="day!== 0" @click="chooseDate(day,true)" :class="{'current': isChooseDay(day,true),'forbidden': isForbidden(day,true)}">
                                 <div class="day-button"></div>
                                 <span class="day-text">{{day.getDate()}}</span>
                             </div>
@@ -25,39 +26,110 @@
                 </div>
             </div>
        </transition>
+       <!-- right calendar -->
+       <transition name="drop" v-if="isSingle">
+           <div v-if="isShowRightCalendar" :class="[prefixCls + '-content']">
+               <div :class="[prefixCls + '-toolbar']">
+                    <span class="toolbar-forword" @click="getForwordMonth()">《</span>
+                    <div class="toolbar-time">{{currentYear}} {{currentMonth }}</div>
+                    <span class="toolbar-backword"  @click="getBackwordMonth()">></span>
+                </div>
+                <div :class="[prefixCls + '-week']">
+                        <div v-for="days in daysName" :key="days" :class="[prefixCls + '-label']">{{days}}</div>
+                </div>
+                <div :class="[prefixCls + '-month-content']">
+                    <div v-for="(day, index) in calendarDays" :key="index" :class="[prefixCls + '-month']">
+                            <div class="datepicker-month-day" v-if="day!== 0" @click="chooseDate(day,false)"
+                                :class="{'current': isChooseDay(day,false),'forbidden': isForbidden(day,false)}">
+                                <div class="day-button"></div>
+                                <span class="day-text">{{day.getDate()}}</span>
+                            </div>
+                            <div v-if="day == 0" :class="[prefixCls + '-month-empty']">
+                                <span>{{day}}</span>
+                            </div>
+                        </div>
+                </div>
+           </div>
+       </transition>
     </div>
 </template>
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator';
+import { Vue, Prop, Component, Emit } from 'vue-property-decorator';
 import { Calendar } from '@/assets/js/calendar';
-import { constants } from 'fs';
+import { close } from 'fs';
 @Component
 export default class DatePicker extends Vue {
-    // @Prop({type:[Date, String]})
+    @Prop({ type: [Date, String] })
+    rangeStart!: '';
+    @Prop({ type: [Date, String] })
+    rangeEnd!: '';
+    @Prop({ type: [Date, String], default: new Date() })
+    leftVal!: Date;
+    @Prop({ type: [Date, String] })
+    rightVal!:Date;
+    @Prop({ type: Number })
+    rangeMonth!: 100;
+    @Prop({ type: Boolean })
+    isSingle!:boolean;
     private prefixCls = 'datepicker'
     private startDate:any;
     private daysName= ['六', '一', '二', '三', '四', '五', '日'];
     private months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
     private inputLeftText: string = '';
+    private inputRightText: string = '';
     private calendar!: Calendar;
     private calendarDays: Array<Number> = [];
     private currentMonth: string = '';
     private currentYear: number = 0;
     private currentMonthNumber: number = 0;
     private isShowLeftCalendar: boolean = false;
-
+    private leftDateVal = this.leftVal || new Date();
+    private isShowRightCalendar: boolean = false;
+    private rightDateVal = this.rightVal || new Date();
+    private listener!: Function;
 
     constructor() {
         super();
         this.calendar = new Calendar();
         this.startDate = new Date();
+        console.log(this);
+        // this.listener = this.listener
     }
+
+    get leftDate() {
+        return this.leftDateVal;
+    }
+    set leftDate(val: Date) {
+        this.leftDateVal = val;
+        this.dateLeftChange(val);
+    }
+    get rightDate() {
+        return this.rightDateVal;
+    }
+    set rightDate(val: Date) {
+        this.rightDateVal = val;
+        this.dateRightChange(val);
+    }
+    @Emit('left-date')
+    dateLeftChange(val: Date) {
+    }
+    @Emit('right-date')
+    dateRightChange(cal: Date) {}
+
+
+
     onInputLeftClick() {
         this.isShowLeftCalendar = !this.isShowLeftCalendar;
-        this.getCurrentLeftValues(this.startDate);
+        this.isShowRightCalendar = false;
+        this.setLeftDate();
+    }
+    onInputRightClick() {
+        this.isShowRightCalendar = !this.isShowRightCalendar;
+        this.isShowLeftCalendar = false;
+        this.setRightDate();
     }
     // 获取左侧monthday
-    getCurrentLeftValues(date: Date) {
+    getCurrentValues(date: Date) {
         this.calendarDays = [];
         this.currentMonthNumber = date.getMonth();
         this.currentMonth = this.months[this.currentMonthNumber];
@@ -82,7 +154,6 @@ export default class DatePicker extends Vue {
         this.currentYear = newYear;
         this.currentMonthNumber = newMonth;
         this.setCurrentMonth(newMonth);
-        // this.triggerAnimation('left');
         // }
     }
     getBackwordMonth() {
@@ -101,7 +172,6 @@ export default class DatePicker extends Vue {
         this.currentYear = newYear;
         this.currentMonthNumber = newMonth;
         this.setCurrentMonth(newMonth);
-        // this.triggerAnimation('left');
         // }
     }
     setCurrentMonth(monthNumber: number) {
@@ -109,23 +179,90 @@ export default class DatePicker extends Vue {
         const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
         this.calendarDays = [].concat.apply([], calendarArray);
     }
-    chooseDate(date:Date) {
-        console.log(date);
-        this.setInputDate(date);
-        this.isShowLeftCalendar = false;
+    chooseDate(date:Date, single: boolean) {
+        if (single) {
+            this.leftDate = date;
+            this.setInputDate(date, true);
+            this.isShowLeftCalendar = false;
+            // this.isShowRightCalendar = true;
+        } else {
+            this.rightDate = date;
+            this.setInputDate(date, false);
+            this.isShowRightCalendar = false;
+        }
     }
 
     // 左侧设置时间
-    setInputDate(date:Date) {
+    setInputDate(date:Date, single: boolean) {
         let month: string =(date.getMonth() + 1).toString();
         if (month.length <2) {
             month = `0${month}`;
         }
         let day: string = (date.getDate()).toString();
         if (day.length<2) { day = `0${day}`; }
-        let inputText: string;
-        inputText = `${date.getFullYear()}/${month}/${day}`;
-        this.inputLeftText = inputText;
+        const inputText:string = `${date.getFullYear()}-${month}-${day}`;
+        if (single) {
+            this.inputLeftText = inputText;
+        } else {
+            this.inputRightText = inputText;
+        }
+    }
+    setLeftDate() {
+        if (this.leftDate) {
+            this.setInputDate(this.leftDate, true);
+            this.getCurrentValues(this.leftDate);
+        } else {
+            this.inputLeftText = '';
+            this.getCurrentValues(new Date());
+        }
+    }
+    setRightDate() {
+        if (this.rightDate) {
+            this.setInputDate(this.rightDate, false);
+            this.getCurrentValues(this.rightDate);
+        } else {
+            this.inputRightText = '';
+            this.getCurrentValues(new Date());
+        }
+    }
+    isCurrentDay(day: Date) {
+        if (day) {
+            return day.toDateString() === new Date().toDateString();
+        }
+        return false;
+    }
+    // 是否被选中
+    isChooseDay(day: Date, single: boolean) {
+        if (single) {
+            if (day && this.leftDate) {
+                return day.toDateString() === this.leftDate.toDateString();
+            }
+        } else if (day && this.rightDate) {
+            return day.toDateString() === this.rightDate.toDateString();
+        }
+    }
+    isForbidden(date: Date, single: boolean) {
+        const NOW = new Date().getTime();
+        if (single) {
+            if (date) {
+                if (date.getTime() > NOW || date.getTime() > this.rightDate.getTime()
+                    || date.getTime() < (NOW - this.rangeMonth * 86400000)) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        } else if (date) {
+            if (date.getTime() > NOW || date.getTime() < this.leftDate.getTime()) {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+    created() {
+        this.setLeftDate();
+        this.setRightDate();
     }
 }
 
@@ -185,6 +322,8 @@ export default class DatePicker extends Vue {
     input{
         height: @input-height-base;
         box-sizing: border-box;
+        display: inline-block;
+        width: 100px;
     }
     position: relative;
     &-month-content{
@@ -202,7 +341,7 @@ export default class DatePicker extends Vue {
             visibility: hidden;
         }
     }
-    &-month-day:hover{
+    &-month-day:hover, &-month-day.current{
         .day-button{
             transform: scale(1);
             opacity: 1;
@@ -211,6 +350,11 @@ export default class DatePicker extends Vue {
         .day-text{
             color: white;
         }
+    }
+    &-month-day.forbidden{
+        cursor:not-allowed;
+        pointer-events: none;
+        color:silver
     }
 }
 .toolbar-time{
