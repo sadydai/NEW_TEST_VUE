@@ -56,7 +56,7 @@
 <script lang="ts">
 import { Vue, Prop, Component, Emit } from 'vue-property-decorator';
 import { Calendar } from '@/assets/js/calendar';
-import { close } from 'fs';
+import { close, constants } from 'fs';
 @Component
 export default class DatePicker extends Vue {
     @Prop({ type: [Date, String] })
@@ -92,8 +92,7 @@ export default class DatePicker extends Vue {
         super();
         this.calendar = new Calendar();
         this.startDate = new Date();
-        console.log(this);
-        // this.listener = this.listener
+        document.addEventListener('click',  this.handleGlobalClick)
     }
 
     get leftDate() {
@@ -260,9 +259,23 @@ export default class DatePicker extends Vue {
             return false;
         }
     }
+    handleGlobalClick(e:any){
+        if(this.$el){
+            if(!this.$el.contains(e.target)){
+                this.isShowLeftCalendar = false;
+                this.isShowRightCalendar = false;
+                this.setLeftDate();
+                this.setRightDate();
+            }
+        }
+        
+    }
     created() {
         this.setLeftDate();
         this.setRightDate();
+    }
+    beforeDestory(){
+        document.removeEventListener('click', this.handleGlobalClick)
     }
 }
 
@@ -286,6 +299,7 @@ export default class DatePicker extends Vue {
     padding: 0 8px;
     box-sizing: border-box;
     border-radius: 4px;
+    z-index: 11;
     transform-origin: center top 0px;
     .@{prefixCls}-toolbar{
         height: 48px;
@@ -323,7 +337,10 @@ export default class DatePicker extends Vue {
         height: @input-height-base;
         box-sizing: border-box;
         display: inline-block;
-        width: 100px;
+        max-width: 100px;
+        color: @input-font-base;
+        padding-left: @select-padding-left;
+        border: none;
     }
     position: relative;
     &-month-content{

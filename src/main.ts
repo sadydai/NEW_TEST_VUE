@@ -10,12 +10,13 @@ Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
     console.log(Cookies.get('session_id'));
     const isLogin = Cookies.get('session_id');
-    if (!isLogin) {
-        console.log('未登陆');
-        window.location.href = 'https://auth.geetest.com/login/';
-    } else {
-        return next();
-    }
+    // if (!isLogin) {
+    //     console.log('未登陆');
+    //     window.location.href = 'https://auth.geetest.com/login/';
+    // } else {
+    //     return next();
+    // }
+    return next();
 });
 
 new Vue({

@@ -20,7 +20,7 @@ body{
     margin: 0;
 }
 #app {
-  color: #2c3e50;
+  color: #3B426B;
   box-sizing: border-box;
 }
 #container {
