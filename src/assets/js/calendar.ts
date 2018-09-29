@@ -10,7 +10,7 @@
 //        return this.message
 //    };
 // }
-
+/* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
 export class Calendar {
     firstWeekDay: number;
 
@@ -36,9 +36,9 @@ export class Calendar {
         }
 
         const weeks: Array<any> = [];
-        let week: Array<any> = [],
-            i = 0,
-            date = this.weekStartDate(new Date(year, month, 1));
+        let week: Array<any> = [];
+            let i = 0;
+            let date = this.weekStartDate(new Date(year, month, 1));
         do {
             for (i = 0; i < 7; i++) {
                 week.push(dayFormatter ? dayFormatter(date) : date);

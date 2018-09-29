@@ -6,9 +6,17 @@
        <transition name= "drop">
             <div :class="[prefixCls + '-content']" v-if="isShowLeftCalendar">
                 <div :class="[prefixCls + '-toolbar']">
-                    <span class="toolbar-forword" @click="getForwordMonth()">《</span>
+                    <span class="toolbar-forword" @click="getForwordMonth()">
+                        <svg viewBox="0 0 24 24" class="page-svg">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </span>
                     <div class="toolbar-time">{{currentYear}} {{currentMonth }}</div>
-                    <span class="toolbar-backword"  @click="getBackwordMonth()">></span>
+                    <span class="toolbar-backword"  @click="getBackwordMonth()">
+                        <svg viewBox="0 0 24 24" class="page-svg">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </span>
                 </div>
                 <div :class="[prefixCls + '-week']">
                         <div v-for="days in daysName" :key="days" :class="[prefixCls + '-label']">{{days}}</div>
@@ -30,9 +38,17 @@
        <transition name="drop" v-if="isSingle">
            <div v-if="isShowRightCalendar" :class="[prefixCls + '-content']">
                <div :class="[prefixCls + '-toolbar']">
-                    <span class="toolbar-forword" @click="getForwordMonth()">《</span>
+                    <span class="toolbar-forword" @click="getForwordMonth()">
+                        <svg viewBox="0 0 24 24" class="page-svg">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                    </span>
                     <div class="toolbar-time">{{currentYear}} {{currentMonth }}</div>
-                    <span class="toolbar-backword"  @click="getBackwordMonth()">></span>
+                    <span class="toolbar-backword"  @click="getBackwordMonth()">
+                         <svg viewBox="0 0 24 24" class="page-svg">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        </svg>
+                    </span>
                 </div>
                 <div :class="[prefixCls + '-week']">
                         <div v-for="days in daysName" :key="days" :class="[prefixCls + '-label']">{{days}}</div>
@@ -92,7 +108,7 @@ export default class DatePicker extends Vue {
         super();
         this.calendar = new Calendar();
         this.startDate = new Date();
-        document.addEventListener('click',  this.handleGlobalClick)
+        document.addEventListener('click', this.handleGlobalClick);
     }
 
     get leftDate() {
@@ -109,6 +125,7 @@ export default class DatePicker extends Vue {
         this.rightDateVal = val;
         this.dateRightChange(val);
     }
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["dateLeftChange", "dateRightChange", "isCurrentDay"] }]    */
     @Emit('left-date')
     dateLeftChange(val: Date) {
     }
@@ -134,7 +151,7 @@ export default class DatePicker extends Vue {
         this.currentMonth = this.months[this.currentMonthNumber];
         this.currentYear = date.getFullYear();
         const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
-        this.calendarDays = [].concat.apply([], calendarArray);
+        this.calendarDays = this.calendarDays.concat.apply([], calendarArray);
     }
     getForwordMonth() {
         const currentMonth = this.currentMonthNumber;
@@ -174,9 +191,10 @@ export default class DatePicker extends Vue {
         // }
     }
     setCurrentMonth(monthNumber: number) {
+        this.calendarDays = [];
         this.currentMonth = this.months[monthNumber];
         const calendarArray = this.calendar.monthDays(this.currentYear, this.currentMonthNumber);
-        this.calendarDays = [].concat.apply([], calendarArray);
+        this.calendarDays = this.calendarDays.concat.apply([], calendarArray);
     }
     chooseDate(date:Date, single: boolean) {
         if (single) {
@@ -245,7 +263,7 @@ export default class DatePicker extends Vue {
         if (single) {
             if (date) {
                 if (date.getTime() > NOW || date.getTime() > this.rightDate.getTime()
-                    || date.getTime() < (NOW - this.rangeMonth * 86400000)) {
+                    || date.getTime() < (NOW - (this.rangeMonth * 86400000))) {
                     return true;
                 }
             } else {
@@ -259,23 +277,22 @@ export default class DatePicker extends Vue {
             return false;
         }
     }
-    handleGlobalClick(e:any){
-        if(this.$el){
-            if(!this.$el.contains(e.target)){
+    handleGlobalClick(e:any) {
+        if (this.$el) {
+            if (!this.$el.contains(e.target)) {
                 this.isShowLeftCalendar = false;
                 this.isShowRightCalendar = false;
                 this.setLeftDate();
                 this.setRightDate();
             }
         }
-        
     }
     created() {
         this.setLeftDate();
         this.setRightDate();
     }
-    beforeDestory(){
-        document.removeEventListener('click', this.handleGlobalClick)
+    beforeDestory() {
+        document.removeEventListener('click', this.handleGlobalClick);
     }
 }
 
@@ -395,33 +412,4 @@ export default class DatePicker extends Vue {
     transform: scale(0);
     transition: all .45s cubic-bezier(.23,1,.32,1);
 }
-.drop-enter-active {
-        animation: TransitionDropIn .3s ease-in-out;
-    }
-
-    .drop-leave-active{
-        animation: TransitionDropOut .3s;
-    }
-    @keyframes TransitionDropIn {
-        0% {
-            opacity: 0;
-            transform: scaleY(0.8);
-        }
-        100% {
-            opacity: 1;
-            transform: scaleY(1);
-        }
-    }
-
-    @keyframes TransitionDropOut {
-        0% {
-            opacity: 1;
-            transform: scaleY(1);
-        }
-        100% {
-            opacity: 0;
-            transform: scaleY(0.8);
-        }
-    }
-
 </style>

@@ -1,9 +1,6 @@
 <template>
     <div>
         <h3>Test 页面</h3>
-        <h4>
-
-        </h4>
         <hr>
         <h3 id="input">input</h3>
         <div class="card">
@@ -52,9 +49,13 @@
                 <DatePicker :leftVal='start' :rightVal='end' :isSingle="true"></DatePicker>
             </div>
             <br>
-            <div class="line">
-                <h2>分页</h2>
-            </div>
+
+        </div>
+        <div class="line">
+            <h2>分页</h2>
+            <div @click="changePage()">更改totalpage 10</div>
+            <Pagination :total='totalPageNum' :current="currentPage" ></Pagination>
+
 
         </div>
     </div>
@@ -70,14 +71,15 @@ import RadioGroup from '@/components/radio-group.vue';
 import Checkbox from '@/components/checkbox.vue';
 import CheckboxGroup from '@/components/checkbox-group.vue';
 import DatePicker from '@/components/datepick.vue';
+import Pagination from '@/components/pagination.vue';
 
 @Component({
-    components:{ Input, Form, FormItem, Select, Radio, RadioGroup, Checkbox, CheckboxGroup, DatePicker },
+    components:{ Input, Form, FormItem, Select, Radio, RadioGroup, Checkbox, CheckboxGroup, DatePicker, Pagination },
     })
 
 export default class Test extends Vue {
     private value1: boolean = false;
-    private value2: String = '';
+    private value2: string = '';
     private value3: any = ['checkbox01'];
     private value4: Boolean = true;
     private modelData: any = 'tesr';
@@ -99,8 +101,10 @@ export default class Test extends Vue {
     private formValidate = { email: '', password: '', select: '' }
     private start = new Date();
     private end = new Date();
+    private totalPageNum: number = 20;
+    private currentPage: number = 3;
 
-    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["getData"] }]    */
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["getData","getDate"] }]    */
     /* 测试blur  focus change input */
     getData() {
         console.log('on-blur');
@@ -109,11 +113,15 @@ export default class Test extends Vue {
     getDate(e:Date) {
         // console.log(e)
     }
+    changePage() {
+        this.totalPageNum = 10;
+        this.currentPage = 1;
+    }
 
-     private ruleType : Boolean = false;
+     private ruleType : boolean = false;
      Submit(name: any) {
-         console.log(this.value4);
-         this.$refs[name].validate((valid:any) => {
+         const parent: any = this.$refs[name];
+         parent.validate((valid:any) => {
              //  if (valid) {
 
              //  } else {

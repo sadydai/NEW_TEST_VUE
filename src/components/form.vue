@@ -13,7 +13,6 @@ export default class Form extends Vue {
     @Prop({ type: Object })
     model: any;
     private fields: Array<Object> = [];
-
     validate(callback:any) {
         return new Promise((resolve) => {
             let valid = true;

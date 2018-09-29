@@ -19,14 +19,16 @@ export default class FormItem extends Vue {
     @Prop({ type: [Object, Array] })
     rules!: [Object, Array<Object>];
     @Prop({ type: Boolean })
-    validateStatus!: Boolean;
-    error: String = '';
+    validateStatus!: boolean;
+    error: string = '';
     @Prop({ type: String })
-    prop!: String
+    prop!: string
     private validateState: string = '';
     private validateMessage: string = '';
     private validator: Object = {};
     private validateDisabled: boolean = false;
+
+
     onFieldBlur() {
         this.validate('blur');
     }
@@ -67,7 +69,7 @@ export default class FormItem extends Vue {
         ];
     }
     get form() {
-        let parent = this.$parent;
+        let parent:any = this.$parent;
         while (parent.$options.name !== 'Form') {
             parent = parent.$parent;
         }
@@ -85,7 +87,6 @@ export default class FormItem extends Vue {
     }
     getRules() {
         let formRules = this.form.rules;
-
         const selfRules = this.rules;
 
         formRules = formRules ? formRules[this.prop] : [];
@@ -98,11 +99,11 @@ export default class FormItem extends Vue {
     }
     validate(trigger:any, callback = function (err:any) {}) {
         const rules = this.getFilteredRule(trigger);
-        const descriptor = {};
+        const descriptor: any = {};
         descriptor[this.prop] = rules;
 
-        const vali = new AsyncValidator(descriptor);
-        const model = {};
+        const vali:any = new AsyncValidator(descriptor);
+        const model: any = {};
         model[this.prop] = this.fieldValue;
         vali.validate(model, { firstFields: true }, (errors:any) => {
             this.validateState = !errors ? 'success' : 'error';
@@ -127,9 +128,6 @@ export default class FormItem extends Vue {
         }
     }
     mounted() {
-        Object.defineProperty(this, 'initialValue', {
-            value: this.fieldValue,
-        });
         this.$on('on-form-change', this.onFieldChange);
         this.$on('on-form-blur', this.onFieldBlur);
         this.dispatch('Form', 'on-form-item-add', this);

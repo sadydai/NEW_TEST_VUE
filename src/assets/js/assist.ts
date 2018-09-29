@@ -1,4 +1,5 @@
 // Find components upward
+
 function findComponentUpward(context:any, componentName:any, componentNames?:any) {
     if (typeof componentName === 'string') {
         componentNames = [componentName];

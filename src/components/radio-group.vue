@@ -13,6 +13,7 @@ export default class RadioGroup extends Vue {
 
     private currentValue = this.value;
     private childrens = [];
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["emitChange"] }]    */
     @Emit('input')
     @Emit('on-change')
     emitChange(val:any) {

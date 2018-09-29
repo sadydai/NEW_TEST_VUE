@@ -8,7 +8,7 @@
                 <ul>
                     <li v-for="option in selectList" :key="option" @click="select(option)">{{option}}</li>
                 </ul>
-                </div>
+            </div>
          </transition>
     </div>
 </template>
@@ -32,6 +32,7 @@ export default class Select extends Vue {
     toggleDrop() {
         this.drop = !this.drop;
     }
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["getSelect"] }]    */
     @Emit('select')
     getSelect(value:any) {
     }
@@ -94,36 +95,6 @@ export default class Select extends Vue {
         padding: 0;
         margin: 0;
     }
-    .drop-enter-active {
-        animation: TransitionDropIn .3s ease-in-out;
-    }
-
-    .drop-leave-active{
-        animation: TransitionDropOut .3s;
-    }
-    @keyframes TransitionDropIn {
-        0% {
-            opacity: 0;
-            transform: scaleY(0.8);
-        }
-        100% {
-            opacity: 1;
-            transform: scaleY(1);
-        }
-    }
-
-    @keyframes TransitionDropOut {
-        0% {
-            opacity: 1;
-            transform: scaleY(1);
-        }
-        100% {
-            opacity: 0;
-            transform: scaleY(0.8);
-        }
-    }
-
-
 
 </style>
 

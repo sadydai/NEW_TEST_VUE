@@ -8,29 +8,7 @@
   </div>
 </template>
 
-<style lang="less">
-@import "./assets/css/scap";
 
-body{
-    background-color: #F2F5FA;
-    box-sizing: border-box;
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    margin: 0;
-}
-#app {
-  color: #3B426B;
-  box-sizing: border-box;
-}
-#container {
-  padding: 30px;
-  width: calc(100% - @side-width);
-  margin-left: @side-width;
-  box-sizing: border-box;
-  padding-top: @header-height;
-}
-</style>
 <script lang="ts">
 import Vue from 'vue';
 import Heater from '@/components/header.vue';
@@ -62,4 +40,27 @@ export default Vue.extend({
 
 });
 </script>
+<style lang="less">
+@import "./assets/css/scap";
+@import "./assets/css/normal";
+body{
+    background-color: #F2F5FA;
+    box-sizing: border-box;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+}
+#app {
+  color: #3B426B;
+  box-sizing: border-box;
+}
+#container {
+  padding: 30px;
+  width: calc(100% - @side-width);
+  margin-left: @side-width;
+  box-sizing: border-box;
+  padding-top: @header-height;
+}
+</style>
 

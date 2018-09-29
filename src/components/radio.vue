@@ -30,7 +30,7 @@ export default class Radio extends Vue {
     @Prop({ type: [String, Number, Boolean] })
     value!: false;
     private currentValue = this.value;
-    private parent = findComponentUpward(this, 'RadioGroup');
+    private parents = findComponentUpward(this, 'RadioGroup');
     private group: Boolean = false;
 
     get wrapClasses() {
@@ -64,6 +64,7 @@ export default class Radio extends Vue {
     get inputClasses() {
         return `${this.prefixCls}-input`;
     }
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["emitInput", "emitChange"] }]    */
     @Emit('input')
     emitInput(val:any) {
 
@@ -79,7 +80,7 @@ export default class Radio extends Vue {
         this.emitInput(this.currentValue);
         if (this.group) {
             if (this.label !== undefined) {
-                this.parent.change({
+                this.parents.change({
                     value: this.label,
                     checked: this.value,
                 });
@@ -93,11 +94,11 @@ export default class Radio extends Vue {
     }
 
     mounted() {
-        if (this.parent) {
+        if (this.parents) {
             this.group = true;
         }
         if (this.group) {
-            this.parent.updateValue();
+            this.parents.updateValue();
         } else {
             this.updateValue();
         }

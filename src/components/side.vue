@@ -42,9 +42,12 @@ export default class Header extends Vue {
         this.sideBarMenu[e] = !this.sideBarMenu[e];
         this.changeMenu(this.sideBarMenu, e);
     }
+    /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
     changeMenu(e:any, t:any) {
-        for (const key of Object.keys(e)) {
-            if (t !== key) {
+        const keys = Object.keys(e);
+        for (let r= 0; r< keys.length; r++) {
+            const key = keys[r];
+            if (t!== key) {
                 e[key] = false;
             }
         }

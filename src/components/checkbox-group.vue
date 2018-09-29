@@ -12,10 +12,12 @@ export default class CheckboxGroup extends Vue {
     value!: ['']
     private currentValue = this.value;
     private childrens = [];
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["emitChange"] }]    */
     @Emit('input')
     @Emit('on-change')
     emitChange(val:any) {
     }
+
     mounted() {
         this.updateValue();
     }

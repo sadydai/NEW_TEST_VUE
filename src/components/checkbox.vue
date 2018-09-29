@@ -41,7 +41,7 @@ export default class Checkbox extends Vue {
     @Prop({ type: [String, Number, Boolean] })
     value!: false;
     private currentValue = this.value;
-    private parent = findComponentUpward(this, 'CheckboxGroup');
+    private parents = findComponentUpward(this, 'CheckboxGroup');
     private group: Boolean = false;
     private model: Array<any> = [];
 
@@ -76,9 +76,9 @@ export default class Checkbox extends Vue {
     get inputClasses() {
         return `${this.prefixCls}-input`;
     }
+    /* eslint class-methods-use-this: ["error", { "exceptMethods": ["emitInput", "emitChange"] }]    */
     @Emit('input')
     emitInput(val:any) {
-
     }
     @Emit('on-change')
     emitChange(val: boolean) {
@@ -90,7 +90,7 @@ export default class Checkbox extends Vue {
         this.currentValue = checked;
         this.emitInput(this.currentValue);
         if (this.group) {
-            this.parent.change(this.model);
+            this.parents.change(this.model);
         } else {
             this.emitChange(this.currentValue);
         }
@@ -100,11 +100,11 @@ export default class Checkbox extends Vue {
     }
 
     mounted() {
-        if (this.parent) {
+        if (this.parents) {
             this.group = true;
         }
         if (this.group) {
-            this.parent.updateValue();
+            this.parents.updateValue();
         } else {
             this.updateValue();
         }
