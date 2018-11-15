@@ -1,9 +1,15 @@
 import axios from 'axios';
 
-const service = axios.create({
-    baseURL: process.env.NODE_ENV === 'development'? 'http://localhost:9090' :'/',
-});
+const baseURL = process.env.NODE_ENV === 'development' ? 'http://192.168.1.172:12222': '/';
 axios.defaults.headers.post['Content-Type']= 'application/x-www-from-urlencoded';
-axios.defaults.withCredentials=true;
+axios.defaults.withCredentials = true;
 
-export default service;
+function http(url:string, method :string, data:any) {
+    return axios({
+        url: `${baseURL}${url}`,
+        method,
+        data,
+    });
+}
+export default http;
+

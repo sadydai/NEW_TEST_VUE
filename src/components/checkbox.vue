@@ -24,6 +24,7 @@
                 >
             </span>
         <slot> <span>{{ label }}</span></slot>
+        <i class="move-active"></i>
     </label>
 </template>
 <script lang="ts">
@@ -44,6 +45,7 @@ export default class Checkbox extends Vue {
     private parents = findComponentUpward(this, 'CheckboxGroup');
     private group: Boolean = false;
     private model: Array<any> = [];
+    private changeActive: boolean = false;
 
     get wrapClasses() {
         return [
@@ -52,6 +54,7 @@ export default class Checkbox extends Vue {
                 [`${this.prefixCls}-group-item`]: this.group,
                 [`${this.prefixCls}-wrapper-checked`]: this.currentValue,
                 [`${this.prefixCls}-wrapper-disabled`]: this.disabled,
+                [`${this.prefixCls}-change`]: this.changeActive,
             },
         ];
     }
@@ -94,6 +97,11 @@ export default class Checkbox extends Vue {
         } else {
             this.emitChange(this.currentValue);
         }
+        if (checked) {
+            this.changeActive = true;
+        } else {
+            this.changeActive = false;
+        }
     }
     updateValue() {
         this.currentValue = this.value;
@@ -131,20 +139,25 @@ export default class Checkbox extends Vue {
         cursor: pointer;
         margin-right: @select-padding-left;
     }
+    &-change .move-active::after{
+        animation: active-data .4s ease-in
+        // transform: scale(1.5);
+        // opacity: .5
+    }
     &-inner{
         display: inline-block;
         width: @radio-width-base;
         height: @radio-width-base;
         position: relative;
         background-color: white;
-        border-radius: 50%;
+        border-radius: 4px;
         border: 1px solid @input-border-base;
         transition: all .2s ease-in-out;
         &::after{
             position: absolute;
             width: @radio-width-base;
             height: @radio-width-base;
-            border-radius: 50%;
+            border-radius: 4px;
             display: table;
             border-top: 0;
             border-left: 0;
@@ -178,16 +191,55 @@ export default class Checkbox extends Vue {
         transform: scale(1.1);
         transition: all .2s ease-in-out;
     }
+
     &-checked .gt-checkbox-correct{
         width: 18px;
         height: 18px;
         display: inline-block;
         z-index: 3;
         background-size: 108%;
-        left: 2px;
+        left: 1px;
         transition: all 0.2s 0.1s ease-in-out;
         transform: translate(0px, -1px);
         opacity: 1;
+        top:2px;
+    }
+
+}
+.move-active{
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: 1px;
+    top:2px;
+}
+.move-active::after{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    background-color: rgba(157,181,248,.8);
+    opacity: 0
+}
+@keyframes active-data {
+    0% {
+        -webkit-transform: scale(.2);
+        transform: scale(.2);
+        opacity: 1
+    }
+
+    50% {
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+        opacity: .5
+    }
+
+    to {
+        -webkit-transform: scale(1.7);
+        transform: scale(1.7);
+        opacity: 0
     }
 }
+
 </style>

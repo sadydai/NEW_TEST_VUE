@@ -153,11 +153,21 @@ export default class FormItem extends Vue {
         &-error{
             margin-bottom: 30px;
             transition: margin-bottom .2s ease;
+            label{
+                color: @red_error!important;
+            }
         }
     }
     &-error{
         input {
-            border-color: @red_error!important
+            border:2px solid @red_error!important;
+            background-color: @error-bg;
+            padding: 11px 12px;
+        }
+        select{
+            border:2px solid @red_error!important;
+            background-color: @error-bg;
+            padding: 9px 12px;
         }
     }
     &-error-tip{
@@ -166,6 +176,7 @@ export default class FormItem extends Vue {
         color: @red_error;
         position: absolute;
         right: 0;
+        margin-top: 2px;
     }
 }
 </style>

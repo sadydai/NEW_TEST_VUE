@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-      <Heater></Heater>
-      <Side></Side>
     <div id="container">
       <router-view></router-view>
     </div>
@@ -11,31 +9,27 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Heater from '@/components/header.vue';
-import Side from '@/components/side.vue';
 import Cookies from 'js-cookie';
-import { sensebotAuth } from '@/api/auth';
 import { Encrypt, Decrypt } from '@/assets/js/crypt';
 import { connect } from 'tls';
 
 export default Vue.extend({
     components: {
-        Heater,
-        Side,
     },
 
     created() {
-        sensebotAuth().then((res:any) => {
-            if (res.data.status === 1) {
-                const info = res.data.data;
-                Cookies.set('user', info.loginname);
-                Cookies.set('S_Level', Encrypt(info.level.toString()), { expires: 5 });
-                const level = Cookies.get('S_Level') || '';
-                console.log(Decrypt(level));
-            } else {
-                console.log('未登录');
-            }
-        });
+        // 加密测试
+        // sensebotAuth().then((res:any) => {
+        //     if (res.data.status === 1) {
+        //         const info = res.data.data;
+        //         Cookies.set('user', info.loginname);
+        //         Cookies.set('S_Level', Encrypt(info.level.toString()), { expires: 5 });
+        //         const level = Cookies.get('S_Level') || '';
+        //         console.log(Decrypt(level));
+        //     } else {
+        //         console.log('未登录');
+        //     }
+        // });
     },
 
 });

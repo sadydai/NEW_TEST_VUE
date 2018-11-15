@@ -40,7 +40,7 @@
     "vue-template-compiler": "^2.5.17"
   },
   "description": "## Project setup ``` npm install ```",
-  "main": ".eslintrc.js",
+  "main": "dist/",
   "directories": {
     "test": "tests"
   },

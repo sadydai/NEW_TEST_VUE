@@ -6,15 +6,18 @@
         <div class="card">
             <Form :rules = "ruleValidate" ref="formValidate" :model="formValidate">
                 <FormItem prop="email">
-                    <Input @on-blur= "getData()" v-model="formValidate.email"  placeholder="this is placeholder"/>
+                    <Input @on-blur= "getData()" v-model="formValidate.email"  placeholder="this is placeholder" :label="'邮箱'"/>
                 </FormItem>
                 <FormItem prop="password">
-                    <Input v-model="formValidate.password" placeholder="this is placeholder"/>
+                    <Input v-model="formValidate.password" placeholder="this is placeholder" :type="'password'"/>
+                </FormItem>
+                <FormItem prop="name">
+                    <Input v-model="formValidate.name" placeholder="this is name" :disabled="true" :label="'姓名'"/>
                 </FormItem>
 
                 <FormItem prop="select">
                     <div>
-                        <Select v-model="formValidate.select" :selectList="testList" @select="getSelect($event)"></Select>
+                        <Select v-model="formValidate.select" :selectList="testList" @select="getSelect($event)" :label="'select选择'"></Select>
                     </div>
                 </FormItem>
                 <FormItem>
@@ -51,12 +54,23 @@
             <br>
 
         </div>
-        <div class="line">
+        <div >
             <h2>分页</h2>
             <div @click="changePage()">更改totalpage 10</div>
             <Pagination :total='totalPageNum' :current="currentPage" ></Pagination>
 
-
+        </div>
+        <div class="line">
+            <h2>button</h2>
+            <GtButton :text="'确认'"></GtButton>
+            <GtButton :text="'确认'" :color="'info'"></GtButton>
+             <h2>Smail button</h2>
+            <GtButton :text="'确认'" :color="'info'" :type="'smail'"></GtButton>
+            <GtButton :text="'确认'"  :type="'smail'"></GtButton>
+            <h2>disabled button</h2>
+             <GtButton :text="'确认'" :color="'info'" :type="'smail'" :disabled="true"></GtButton>
+            <GtButton :text="'确认'"  :type="'smail'" :disabled="true"></GtButton>
+            <GtButton :text="'确认'"  :disabled="true"></GtButton>
         </div>
     </div>
 </template>
@@ -72,9 +86,10 @@ import Checkbox from '@/components/checkbox.vue';
 import CheckboxGroup from '@/components/checkbox-group.vue';
 import DatePicker from '@/components/datepick.vue';
 import Pagination from '@/components/pagination.vue';
+import GtButton from '@/components/button.vue';
 
 @Component({
-    components:{ Input, Form, FormItem, Select, Radio, RadioGroup, Checkbox, CheckboxGroup, DatePicker, Pagination },
+    components:{ Input, Form, FormItem, Select, Radio, RadioGroup, Checkbox, CheckboxGroup, DatePicker, Pagination, GtButton },
     })
 
 export default class Test extends Vue {
@@ -83,7 +98,7 @@ export default class Test extends Vue {
     private value3: any = ['checkbox01'];
     private value4: Boolean = true;
     private modelData: any = 'tesr';
-    private testList:Array<string> = ['qq', 'eee'];
+    private testList:Array<any> = ['test', 'list'];
     private ruleValidate: Object = {
         email: [
             {
@@ -94,11 +109,16 @@ export default class Test extends Vue {
         password: [
             { required: true, trigger: 'blur' },
         ],
+        name: [
+            { required: true, trigger: 'blur' },
+        ],
         select: [
             { required: true, trigger: 'change' },
         ],
     }
-    private formValidate = { email: '', password: '', select: '' }
+    private formValidate = {
+        email: '', password: '', select: '', name: '',
+    }
     private start = new Date();
     private end = new Date();
     private totalPageNum: number = 20;
