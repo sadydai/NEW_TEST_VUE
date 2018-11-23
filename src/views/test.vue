@@ -64,11 +64,11 @@
             <h2>button</h2>
             <GtButton :text="'确认'"></GtButton>
             <GtButton :text="'确认'" :color="'info'"></GtButton>
-             <h2>Smail button</h2>
+            <h2>Smail button</h2>
             <GtButton :text="'确认'" :color="'info'" :type="'smail'"></GtButton>
             <GtButton :text="'确认'"  :type="'smail'"></GtButton>
             <h2>disabled button</h2>
-             <GtButton :text="'确认'" :color="'info'" :type="'smail'" :disabled="true"></GtButton>
+            <GtButton :text="'确认'" :color="'info'" :type="'smail'" :disabled="true"></GtButton>
             <GtButton :text="'确认'"  :type="'smail'" :disabled="true"></GtButton>
             <GtButton :text="'确认'"  :disabled="true"></GtButton>
         </div>
